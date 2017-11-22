@@ -4,15 +4,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * gkislin
- * 03.07.2016
- */
 public class MainMatrix {
     private static final int MATRIX_SIZE = 1000;
-    private static final int THREAD_NUMBER = 10;
+    private static final int THREAD_COUNT = 10;
+    private static final int PASS_COUNT = 5;
 
-    private final static ExecutorService executor = Executors.newFixedThreadPool(MainMatrix.THREAD_NUMBER);
+    private final static ExecutorService executor = Executors.newFixedThreadPool(MainMatrix.THREAD_COUNT);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final int[][] matrixA = MatrixUtil.create(MATRIX_SIZE);
@@ -21,7 +18,8 @@ public class MainMatrix {
         double singleThreadSum = 0.;
         double concurrentThreadSum = 0.;
         int count = 1;
-        while (count < 6) {
+
+        while (count <= PASS_COUNT) {
             System.out.println("Pass " + count);
             long start = System.currentTimeMillis();
             final int[][] matrixC = MatrixUtil.singleThreadMultiply(matrixA, matrixB);
@@ -42,8 +40,8 @@ public class MainMatrix {
             count++;
         }
         executor.shutdown();
-        out("\nAverage single thread time, sec: %.3f", singleThreadSum / 5.);
-        out("Average concurrent thread time, sec: %.3f", concurrentThreadSum / 5.);
+        out("\nAverage single thread time, sec: %.3f", singleThreadSum / count * 1.);
+        out("Average concurrent thread time, sec: %.3f", concurrentThreadSum / count * 1.);
     }
 
     private static void out(String format, double ms) {

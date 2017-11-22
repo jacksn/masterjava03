@@ -4,10 +4,6 @@ import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
-/**
- * gkislin
- * 03.07.2016
- */
 public class MatrixUtil {
 
     // TODO implement parallel multiplication matrixA*matrixB
@@ -18,16 +14,18 @@ public class MatrixUtil {
         return matrixC;
     }
 
-    // TODO optimize by https://habrahabr.ru/post/114797/
     public static int[][] singleThreadMultiply(int[][] matrixA, int[][] matrixB) {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
+        final int[][] transposedMatrixB = transpose(matrixB);
 
         for (int i = 0; i < matrixSize; i++) {
+            int[] matrixARow = matrixA[i];
             for (int j = 0; j < matrixSize; j++) {
                 int sum = 0;
+                int[] matrixBCol = transposedMatrixB[j];
                 for (int k = 0; k < matrixSize; k++) {
-                    sum += matrixA[i][k] * matrixB[k][j];
+                    sum += matrixARow[k] * matrixBCol[k];
                 }
                 matrixC[i][j] = sum;
             }
@@ -57,5 +55,18 @@ public class MatrixUtil {
             }
         }
         return true;
+    }
+
+    public static int[][] transpose(int[][] matrix) {
+        final int matrixSize = matrix.length;
+        final int[][] transposedMatrix = new int[matrixSize][matrixSize];
+
+        for (int i = 0; i < matrixSize; i++) {
+            for (int j = 0; j < matrixSize; j++) {
+                transposedMatrix[i][j] = matrix[j][i];
+            }
+        }
+
+        return transposedMatrix;
     }
 }
