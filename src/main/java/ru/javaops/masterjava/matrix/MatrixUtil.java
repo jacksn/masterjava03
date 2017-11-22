@@ -14,18 +14,36 @@ public class MatrixUtil {
         final int[][] matrixC = new int[matrixSize][matrixSize];
         final int[][] transposedMatrixB = transpose(matrixB);
 
-        final CountDownLatch latch;
-
-        final int chunkCount = matrixSize / THREAD_COUNT;
+        int chunkCount = matrixSize / THREAD_COUNT;
 
         if (chunkCount == 0) {
-            latch = new CountDownLatch(1);
-            executor.submit(new MultiplyTask(matrixA, transposedMatrixB, matrixC, 0, matrixSize, latch));
-        } else {
-            latch = new CountDownLatch(chunkCount);
-            for (int i = 0; i < chunkCount; i++) {
-                executor.submit(new MultiplyTask(matrixA, transposedMatrixB, matrixC, i * THREAD_COUNT, (i + 1) * THREAD_COUNT, latch));
-            }
+            chunkCount++;
+        }
+
+        final CountDownLatch latch = new CountDownLatch(chunkCount);
+
+        for (int i = 0; i < chunkCount; i++) {
+            final int startRow = i * THREAD_COUNT;
+            final int endRow = (i + 1) * THREAD_COUNT;
+
+            // When replaced with lambda, first pass takes ~50 ms more time
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    for (int row = startRow; row < endRow; row++) {
+                        int[] matrixARow = matrixA[row];
+                        for (int j = 0; j < matrixSize; j++) {
+                            int sum = 0;
+                            int[] matrixBCol = transposedMatrixB[j];
+                            for (int k = 0; k < matrixSize; k++) {
+                                sum += matrixARow[k] * matrixBCol[k];
+                            }
+                            matrixC[row][j] = sum;
+                        }
+                    }
+                    latch.countDown();
+                }
+            });
         }
 
         latch.await();
@@ -85,44 +103,6 @@ public class MatrixUtil {
                 transposedMatrix[i][j] = matrix[j][i];
             }
         }
-
         return transposedMatrix;
-    }
-
-    private static class MultiplyTask implements Runnable {
-        private final int[][] matrixA;
-        private final int[][] transposedMatrixB;
-        private final int[][] resultMatrix;
-
-        private final int startRow;
-        private final int endRow;
-
-        private final CountDownLatch latch;
-
-        public MultiplyTask(int[][] matrixA, int[][] transposedMatrixB, int[][] resultMatrix, int startRow, int endRow, CountDownLatch latch) {
-            this.matrixA = matrixA;
-            this.transposedMatrixB = transposedMatrixB;
-            this.resultMatrix = resultMatrix;
-            this.startRow = startRow;
-            this.endRow = endRow;
-            this.latch = latch;
-        }
-
-        @Override
-        public void run() {
-            final int matrixSize = matrixA.length;
-            for (int i = startRow; i < endRow; i++) {
-                int[] matrixARow = matrixA[i];
-                for (int j = 0; j < matrixSize; j++) {
-                    int sum = 0;
-                    int[] matrixBCol = transposedMatrixB[j];
-                    for (int k = 0; k < matrixSize; k++) {
-                        sum += matrixARow[k] * matrixBCol[k];
-                    }
-                    resultMatrix[i][j] = sum;
-                }
-            }
-            latch.countDown();
-        }
     }
 }
