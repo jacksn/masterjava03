@@ -12,7 +12,6 @@ public class MatrixUtil {
     public static int[][] concurrentMultiply(int[][] matrixA, int[][] matrixB, ExecutorService executor) throws InterruptedException, ExecutionException {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
-        final int[][] transposedMatrixB = transpose(matrixB);
 
         int chunkCount = matrixSize / THREAD_COUNT;
 
@@ -31,14 +30,14 @@ public class MatrixUtil {
                 @Override
                 public void run() {
                     for (int row = startRow; row < endRow; row++) {
-                        int[] matrixARow = matrixA[row];
+                        final int[] matrixARow = matrixA[row];
+                        final int[] matrixCRow = matrixC[row];
                         for (int j = 0; j < matrixSize; j++) {
-                            int sum = 0;
-                            int[] matrixBCol = transposedMatrixB[j];
+                            final int elA = matrixARow[j];
+                            final int[] matrixBRow = matrixB[j];
                             for (int k = 0; k < matrixSize; k++) {
-                                sum += matrixARow[k] * matrixBCol[k];
+                                matrixCRow[k] += elA * matrixBRow[k];
                             }
-                            matrixC[row][j] = sum;
                         }
                     }
                     latch.countDown();
@@ -54,17 +53,16 @@ public class MatrixUtil {
     public static int[][] singleThreadMultiply(int[][] matrixA, int[][] matrixB) {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
-        final int[][] transposedMatrixB = transpose(matrixB);
 
         for (int i = 0; i < matrixSize; i++) {
-            int[] matrixARow = matrixA[i];
+            final int[] matrixARow = matrixA[i];
+            final int[] matrixCRow = matrixC[i];
             for (int j = 0; j < matrixSize; j++) {
-                int sum = 0;
-                int[] matrixBCol = transposedMatrixB[j];
+                final int elA = matrixARow[j];
+                final int[] matrixBRow = matrixB[j];
                 for (int k = 0; k < matrixSize; k++) {
-                    sum += matrixARow[k] * matrixBCol[k];
+                    matrixCRow[k] += elA * matrixBRow[k];
                 }
-                matrixC[i][j] = sum;
             }
         }
         return matrixC;
@@ -92,17 +90,5 @@ public class MatrixUtil {
             }
         }
         return true;
-    }
-
-    public static int[][] transpose(int[][] matrix) {
-        final int matrixSize = matrix.length;
-        final int[][] transposedMatrix = new int[matrixSize][matrixSize];
-
-        for (int i = 0; i < matrixSize; i++) {
-            for (int j = 0; j < matrixSize; j++) {
-                transposedMatrix[i][j] = matrix[j][i];
-            }
-        }
-        return transposedMatrix;
     }
 }

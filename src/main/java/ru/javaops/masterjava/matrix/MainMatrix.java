@@ -8,6 +8,10 @@ import java.util.concurrent.Executors;
  * Matrix size: 1000
  * Average single thread time, sec: 0,445
  * Average concurrent thread time, sec: 0,129
+ *
+ * Optimized, removing transposition
+ * Average single thread time, sec: 0,232
+ * Average concurrent thread time, sec: 0,072
  */
 public class MainMatrix {
     private static final int MATRIX_SIZE = 1000;
