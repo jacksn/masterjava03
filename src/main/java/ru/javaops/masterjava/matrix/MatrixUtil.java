@@ -5,7 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 
-import static ru.javaops.masterjava.matrix.MainMatrix.THREAD_COUNT;
+import static ru.javaops.masterjava.matrix.MainMatrix.CHUNK_SIZE;
 
 public class MatrixUtil {
 
@@ -13,7 +13,7 @@ public class MatrixUtil {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
 
-        int chunkCount = matrixSize / THREAD_COUNT;
+        int chunkCount = matrixSize / CHUNK_SIZE;
 
         if (chunkCount == 0) {
             chunkCount++;
@@ -22,26 +22,22 @@ public class MatrixUtil {
         final CountDownLatch latch = new CountDownLatch(chunkCount);
 
         for (int i = 0; i < chunkCount; i++) {
-            final int startRow = i * THREAD_COUNT;
-            final int endRow = (i + 1) * THREAD_COUNT;
+            final int startRow = i * CHUNK_SIZE;
+            final int endRow = (i + 1) * CHUNK_SIZE;
 
-            // When replaced with lambda, first pass takes ~50 ms more time
-            executor.submit(new Runnable() {
-                @Override
-                public void run() {
-                    for (int row = startRow; row < endRow; row++) {
-                        final int[] matrixARow = matrixA[row];
-                        final int[] matrixCRow = matrixC[row];
-                        for (int j = 0; j < matrixSize; j++) {
-                            final int elA = matrixARow[j];
-                            final int[] matrixBRow = matrixB[j];
-                            for (int k = 0; k < matrixSize; k++) {
-                                matrixCRow[k] += elA * matrixBRow[k];
-                            }
+            executor.submit(() -> {
+                for (int row = startRow; row < endRow; row++) {
+                    final int[] matrixARow = matrixA[row];
+                    final int[] matrixCRow = matrixC[row];
+                    for (int j = 0; j < matrixSize; j++) {
+                        final int elA = matrixARow[j];
+                        final int[] matrixBRow = matrixB[j];
+                        for (int k = 0; k < matrixSize; k++) {
+                            matrixCRow[k] += elA * matrixBRow[k];
                         }
                     }
-                    latch.countDown();
                 }
+                latch.countDown();
             });
         }
 

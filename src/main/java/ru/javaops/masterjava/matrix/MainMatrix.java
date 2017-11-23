@@ -15,10 +15,11 @@ import java.util.concurrent.Executors;
  */
 public class MainMatrix {
     private static final int MATRIX_SIZE = 1000;
-    public static final int THREAD_COUNT = 10;
+    public static final int THREAD_COUNT = 8;
+    public static final int CHUNK_SIZE = 20;
     private static final int PASS_COUNT = 5;
 
-    private final static ExecutorService executor = Executors.newFixedThreadPool(MainMatrix.THREAD_COUNT);
+    private final static ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final int[][] matrixA = MatrixUtil.create(MATRIX_SIZE);
