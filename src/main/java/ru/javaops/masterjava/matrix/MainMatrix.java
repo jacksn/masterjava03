@@ -5,13 +5,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Matrix size: 1000
- * Average single thread time, sec: 0,445
- * Average concurrent thread time, sec: 0,129
- *
- * Optimized, removing transposition
- * Average single thread time, sec: 0,232
- * Average concurrent thread time, sec: 0,072
+ * Matrix size: 1000 <br>
+ * Average single thread time, sec: 0,445 <br>
+ * Average concurrent thread time, sec: 0,129 <br>
+ * <br>
+ * Optimized, removing transposition <br>
+ * Average single thread time, sec: 0,232 <br>
+ * Average concurrent thread time, sec: 0,072 <br>
  */
 public class MainMatrix {
     private static final int MATRIX_SIZE = 1000;
@@ -38,7 +38,8 @@ public class MainMatrix {
             singleThreadSum += duration;
 
             start = System.currentTimeMillis();
-            final int[][] concurrentMatrixC = MatrixUtil.concurrentMultiply(matrixA, matrixB, executor);
+//            final int[][] concurrentMatrixC = MatrixUtil.concurrentMultiply(matrixA, matrixB, executor);
+            final int[][] concurrentMatrixC = MatrixUtil.concurrentMultiplyFJP(matrixA, matrixB);
             duration = (System.currentTimeMillis() - start) / 1000.;
             out("Concurrent thread time, sec: %.3f", duration);
             concurrentThreadSum += duration;
@@ -56,5 +57,15 @@ public class MainMatrix {
 
     private static void out(String format, double ms) {
         System.out.println(String.format(format, ms));
+    }
+
+    private static void printMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            for (int el : row) {
+                System.out.printf("%4d", el);
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }

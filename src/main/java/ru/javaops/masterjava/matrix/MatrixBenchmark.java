@@ -33,7 +33,7 @@ public class MatrixBenchmark {
 
     private ExecutorService executor;
 
-//    @Benchmark
+    @Benchmark
     public int[][] singleThreadMultiplyOpt() throws Exception {
         return MatrixUtil.singleThreadMultiply(matrixA, matrixB);
     }
@@ -41,6 +41,11 @@ public class MatrixBenchmark {
     @Benchmark
     public int[][] concurrentMultiply() throws Exception {
         return MatrixUtil.concurrentMultiply(matrixA, matrixB, executor);
+    }
+
+    @Benchmark
+    public int[][] concurrentMultiplyFJP() throws Exception {
+        return MatrixUtil.concurrentMultiplyFJP(matrixA, matrixB);
     }
 
     @Setup
