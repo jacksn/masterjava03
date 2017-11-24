@@ -19,8 +19,9 @@ public class MatrixBenchmark {
     // Matrix size
     private static final int MATRIX_SIZE = 1000;
 
-//    @Param({"10"})
-    private int threadCount = 10;
+    @Param({"10"})
+//    @Param({"2", "4", "8", "12"})
+    private int threadCount;
 
     private static int[][] matrixA;
     private static int[][] matrixB;
@@ -59,6 +60,8 @@ public class MatrixBenchmark {
     }
 }
 /*
+Windows 8.1 x64
+
 Benchmark                                (threadCount)  Mode  Cnt    Score   Error  Units
 MatrixBenchmark.concurrentMultiply                   2    ss   25  117,186 ±  1,210  ms/op
 MatrixBenchmark.concurrentMultiply                   4    ss   25   64,194 ±  1,728  ms/op
@@ -68,4 +71,18 @@ MatrixBenchmark.singleThreadMultiplyOpt              2    ss   25  241,068 ± 19
 MatrixBenchmark.singleThreadMultiplyOpt              4    ss   25  233,630 ±  2,760  ms/op
 MatrixBenchmark.singleThreadMultiplyOpt              8    ss   25  234,850 ±  3,355  ms/op
 MatrixBenchmark.singleThreadMultiplyOpt             12    ss   25  233,162 ±  2,910  ms/op
+
+Ubuntu 17.10 x64, JDK 1.8.0 b151
+
+Benchmark                                (threadCount)  Mode  Cnt    Score   Error  Units
+MatrixBenchmark.concurrentMultiply                  10    ss   25   66.031 ± 3.035  ms/op
+MatrixBenchmark.concurrentMultiplyFJP               10    ss   25   63.588 ± 1.980  ms/op
+MatrixBenchmark.singleThreadMultiplyOpt             10    ss   25  228.387 ± 3.547  ms/op
+
+Ubuntu 17.10 x64, JDK 9.0.1
+
+Benchmark                                (threadCount)  Mode  Cnt    Score   Error  Units
+MatrixBenchmark.concurrentMultiply                  10    ss   25   47.540 ± 3.207  ms/op
+MatrixBenchmark.concurrentMultiplyFJP               10    ss   25   46.632 ± 3.672  ms/op
+MatrixBenchmark.singleThreadMultiplyOpt             10    ss   25  148.951 ± 2.812  ms/op
 */
