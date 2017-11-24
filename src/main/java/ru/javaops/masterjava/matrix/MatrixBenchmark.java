@@ -60,17 +60,19 @@ public class MatrixBenchmark {
     }
 }
 /*
-Windows 8.1 x64
+Windows 8.1 x64, JDK 1.8.0 b152
 
 Benchmark                                (threadCount)  Mode  Cnt    Score   Error  Units
-MatrixBenchmark.concurrentMultiply                   2    ss   25  117,186 ±  1,210  ms/op
-MatrixBenchmark.concurrentMultiply                   4    ss   25   64,194 ±  1,728  ms/op
-MatrixBenchmark.concurrentMultiply                   8    ss   25   62,603 ±  1,596  ms/op
-MatrixBenchmark.concurrentMultiply                  12    ss   25   62,340 ±  0,909  ms/op
-MatrixBenchmark.singleThreadMultiplyOpt              2    ss   25  241,068 ± 19,372  ms/op
-MatrixBenchmark.singleThreadMultiplyOpt              4    ss   25  233,630 ±  2,760  ms/op
-MatrixBenchmark.singleThreadMultiplyOpt              8    ss   25  234,850 ±  3,355  ms/op
-MatrixBenchmark.singleThreadMultiplyOpt             12    ss   25  233,162 ±  2,910  ms/op
+MatrixBenchmark.concurrentMultiply                  10    ss   25   67,419 ± 5,630  ms/op
+MatrixBenchmark.concurrentMultiplyFJP               10    ss   25   65,679 ± 2,491  ms/op
+MatrixBenchmark.singleThreadMultiplyOpt             10    ss   25  238,962 ± 2,322  ms/op
+
+Windows 8.1 x64, JDK 9.0.1
+
+Benchmark                                (threadCount)  Mode  Cnt    Score    Error  Units
+MatrixBenchmark.concurrentMultiply                  10    ss   25   54,242 ± 10,222  ms/op
+MatrixBenchmark.concurrentMultiplyFJP               10    ss   25   50,875 ±  3,288  ms/op
+MatrixBenchmark.singleThreadMultiplyOpt             10    ss   25  174,334 ±  4,938  ms/op
 
 Ubuntu 17.10 x64, JDK 1.8.0 b151
 
